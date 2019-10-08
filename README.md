@@ -128,12 +128,131 @@ The resource does not support any arguments except `keepers`, and exports only `
 
 For example: `$ terraform import random_uuid.main aabbccdd-eeff-0011-2233-445566778899`
 
+# Example of random resources usage 
+
+We are going to create an example that starts and AWS EC2 micro instance, that is getting random server name suffix each time AMI is changed, and also contains some randomly generated or randomly shuffled tags (for geo-region). This is purely demonstrational example, but, for example , sync of using random_shuffle - for specifying for ELB 2 zone out of 5,
+and so on.
+The 3 resource that are NOT demonstrated in he example belows are `random_string`, `random_uuid` and `random_pet`, the first one - because `random_password` mostly duplicates its functionality ,and, hidden in console; and last one - is demonstrated in a separate repo [here](https://github.com/Galser/tf-random-pet). As for the `random_uuid` - its usage is straight-forward and will be provided also in a separate repo, together with `random_pet`. 
+
+- Let's create our infrastructure, please put the code below in the file `main.tf`
+    ```terraform
+    variable "ami_id" {
+      default = "ami-048d25c1bda4feda7" # Ubuntu 18.04.3 Bionic, custom
+    }
+
+    # AWS provider
+    provider "aws" {
+      profile    = "default"
+      region     = "eu-central-1"
+    }
+
+    resource "random_id" "server" {
+      keepers = {
+        # Generate a new id each time we switch to a new AMI id
+        ami_id = "${var.ami_id}"
+      }
+      byte_length = 8
+    }
+
+    resource "random_password" "password" {
+      length = 16
+      special = true
+      override_special = "_%@"
+    }
+
+    resource "random_shuffle" "separation_zone" {
+      input = ["europe", "asia", "us", "australia", "antarctica"]
+      result_count = 1 # return only ONE zone
+    }
+
+    resource "random_integer" "subzone" {
+      min     = 1
+      max     = 3
+    }
+
+    resource "aws_instance" "randomexample" {
+      # Read the AMI id "through" the random_id resource to ensure that
+      # both will change together.
+      ami = "${random_id.server.keepers.ami_id}"
+
+      instance_type = "t2.micro"
+
+      tags = {
+        "name" = "randomexample-${random_id.server.hex}"
+        "future_password" = random_password.password.result
+        "zone" = "${element(random_shuffle.separation_zone.result,0)}"
+        "subzone" = "${random_integer.subzone.result}"
+      }
+    }
+
+    output "server_tags" {
+      value = "${aws_instance.randomexample.tags}"
+    }
+    ```
+- Init Terraform with : 
+    ```
+    terraform init
+    ```
+- Now, let's run apply for our code :
+    ```
+    terraform.apply
+    ```
+    And reply `yes`
+- Output going to look similar to : 
+    ```
+    An execution plan has been generated and is shown below.
+    Resource actions are indicated with the following symbols:
+    + create
+
+    Terraform will perform the following actions:
+
+    # aws_instance.randomexample will be created
+    + resource "aws_instance" "randomexample" {
+        + ami                          = "ami-048d25c1bda4feda7"
+        + arn                          = (known after apply)
+        + associate_public_ip_address  = (known after apply)
+    ...
+    random_shuffle.separation_zone: Creating...
+    random_id.server: Creating...
+    random_integer.subzone: Creating...
+    random_password.password: Creating...
+    random_integer.subzone: Creation complete after 0s [id=3]
+    random_id.server: Creation complete after 0s [id=OyQjiAtzJPg]
+    random_shuffle.separation_zone: Creation complete after 1s [id=-]
+    random_password.password: Creation complete after 1s [id=none]
+    aws_instance.randomexample: Creating...
+    aws_instance.randomexample: Still creating... [10s elapsed]
+    aws_instance.randomexample: Still creating... [20s elapsed]
+    aws_instance.randomexample: Creation complete after 22s [id=i-0aa6b07cfc771e7bc]
+
+    Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
+
+    Outputs:
+
+    server_tags = {
+      "future_password" = "qhs@cS69dCKr16%8"
+      "name" = "randomexample-3b2423880b7324f8"
+      "subzone" = "3"
+      "zone" = "australia"
+    }
+    ```
+    Now, here as you can see we have 4 "random" values populated in tag.
+    Some are very useful, for example *unique* name "randomexample-3b2423880b7324f8", some are less, and displaying passwords like this is not recommended in normal course of events. 
+    This is only been provided as an exercise.
+-  Do not forget to free-up resource, when they do not needed anymore, by running : 
+    ```
+    terraform destroy
+    ```
+    And replying `yes` to the question
+
+This concludes the section.    
+
 
 # todo
-[ ] example code
 [ ] update Readme
 
 # done
 
 [x] initial readme
 [x] intro
+[x] example code
