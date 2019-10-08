@@ -7,7 +7,7 @@ This repo assumes general knowledge about Terraform for AWS, if not, please get 
 
 # Random provider
 
-The "random" provider allows the use of randomness within Terraform configurations. This is a logical provider, which means that it works entirely within Terraform's logic, and doesn't interact with any other services.
+The **"random"** provider allows the use of randomness within Terraform configurations. This is a logical provider, which means that it works entirely within Terraform's logic, and doesn't interact with any other services.
 
 Unconstrained randomness within a Terraform configuration would not be very useful, since Terraform's goal is to converge on a fixed configuration by applying a diff. Because of this, the **"random" provider provides an idea of managed randomness**: it provides resources that generate random values during their creation and then hold those values steady until the inputs are changed. 
 
@@ -20,7 +20,7 @@ Provider has following resources:
 - random_string
 - random_uuid
 
-The resources **all provide a map argument called keepers** that can be populated with arbitrary key/value pairs that should be selected such that they remain the same until new random values are desired. E.g. this i
+The resources **all provide a map argument called keepers** that can be populated with arbitrary key/value pairs that should be selected such that they remain the same until new random values are desired. E.g. this can be tied to the zone in AWS, or the image of the instance and so on.
 
 Let's walk over short description of features of each and every resource, and then we going to check the example.
 
@@ -30,28 +30,29 @@ This generates random numbers that are intended to be used as unique identifiers
 This resource can be used in conjunction with resources that have the `create_before_destroy` lifecycle flag set, to avoid conflicts with unique names during the brief period where both the old and new resources exist concurrently.
 
 The following arguments are supported:
-- byte_length - (Required) The number of random bytes to produce. The minimum value is 1, which produces eight bits of randomness.
-- prefix - (Optional) Arbitrary string to prefix the output value with. This string is supplied as-is, meaning it is not guaranteed to be URL-safe or base64 encoded.
+- `byte_length` - (Required) The number of random bytes to produce. The minimum value is 1, which produces eight bits of randomness.
+- `prefix` - (Optional) Arbitrary string to prefix the output value with. This string is supplied as-is, meaning it is not guaranteed to be URL-safe or base64 encoded.
 
 The following attributes are exported:
-- b64_url - The generated id presented in base64, using the URL-friendly character set: case-sensitive letters, digits and the characters _ and -.
-- b64_std - The generated id presented in base64 without additional transformations.
-- hex - The generated id presented in padded hexadecimal digits. This result will always be twice as long as the requested byte length.
-- dec - The generated id presented in non-padded decimal digits.
+- `b64_url` - The generated id presented in base64, using the URL-friendly character set: case-sensitive letters, digits and the characters _ and -.
+- `b64_std` - The generated id presented in base64 without additional transformations.
+- `hex` - The generated id presented in padded hexadecimal digits. This result will always be twice as long as the requested byte length.
+- `dec` - The generated id presented in non-padded decimal digits.
 
 ### random_integer
 Original manual can be found [here](https://www.terraform.io/docs/providers/random/r/integer.html)
 This resource generates random values from a given range, described by the min and max attributes of a given resource.
 
 This resource also can be used in conjunction with resources that have the `create_before_destroy` lifecycle flag set, to avoid conflicts with unique names during the brief period where both the old and new resources exist concurrently.
+
 The following arguments are supported:
-- min - (int) The minimum inclusive value of the range.
-- max - (int) The maximum inclusive value of the range.
-- seed - (Optional) A custom seed to always produce the same value.
+- `min` - (int) The minimum inclusive value of the range.
+- `max` - (int) The maximum inclusive value of the range.
+- `seed` - (Optional) A custom seed to always produce the same value.
 
 The following attributes are supported:
-- id - (string) An internal id.
-- result - (int) The random Integer result.
+- `id` - (string) An internal id.
+- `result` - (int) The random Integer result.
 
 ### random_string 
 
@@ -62,16 +63,16 @@ Historically this resource's intended usage has been ambiguous as the original e
 
 The following arguments are supported:
 
--  length - (Required) The length of the string desired
--  upper - (Optional) (default true) Include uppercase alphabet characters in random string.
--  min_upper - (Optional) (default 0) Minimum number of uppercase alphabet characters in random string.
--  lower - (Optional) (default true) Include lowercase alphabet characters in random string.
--  min_lower - (Optional) (default 0) Minimum number of lowercase alphabet characters in random string.
--  number - (Optional) (default true) Include numeric characters in random string.
--  min_numeric - (Optional) (default 0) Minimum number of numeric characters in random string.
--  special - (Optional) (default true) Include special characters in random string. These are `!@#$%&*()-_=+[]{}<>:?`
--  min_special - (Optional) (default 0) Minimum number of special characters in random string.
--  override_special - (Optional) Supply your own list of special characters to use for string generation. This overrides the default character list in the special argument. The special argument must still be set to true for any overwritten characters to be used in generation.
+-  `length` - (Required) The length of the string desired
+-  `upper` - (Optional) (default true) Include uppercase alphabet characters in random string.
+-  `min_upper` - (Optional) (default 0) Minimum number of uppercase alphabet characters in random string.
+-  `lower` - (Optional) (default true) Include lowercase alphabet characters in random string.
+-  `min_lower` - (Optional) (default 0) Minimum number of lowercase alphabet characters in random string.
+-  `number` - (Optional) (default true) Include numeric characters in random string.
+-  `min_numeric` - (Optional) (default 0) Minimum number of numeric characters in random string.
+-  `special` - (Optional) (default true) Include special characters in random string. These are `!@#$%&*()-_=+[]{}<>:?`
+-  `min_special` - (Optional) (default 0) Minimum number of special characters in random string.
+-  `override_special` - (Optional) Supply your own list of special characters to use for string generation. This overrides the default character list in the special argument. The special argument must still be set to true for any overwritten characters to be used in generation.
 
 Exports only one attribute : 
 - result - Random string generated.
@@ -245,14 +246,15 @@ The 3 resource that are NOT demonstrated in he example belows are `random_string
     ```
     And replying `yes` to the question
 
-This concludes the section.    
+This concludes the section. Thank you! 
 
 
 # todo
-[ ] update Readme
+
 
 # done
 
 [x] initial readme
 [x] intro
 [x] example code
+[x] update Readme
