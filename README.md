@@ -131,9 +131,9 @@ For example: `$ terraform import random_uuid.main aabbccdd-eeff-0011-2233-445566
 
 # Example of random resources usage 
 
-We are going to create an example that starts and AWS EC2 micro instance, that is getting random server name suffix each time AMI is changed, and also contains some randomly generated or randomly shuffled tags (for geo-region). This is purely demonstrational example, but, for example , sync of using random_shuffle - for specifying for ELB 2 zone out of 5,
+We are going to create an example that starts an AWS EC2 t2.micro instance, that is getting random server name suffix each time AMI is changed, and also contains some randomly generated or randomly shuffled tags (for geo-region). This is purely demonstrational code, but, for example , think of using `random_shuffle` - for specifying for ELB zones ( 2 out of 5),
 and so on.
-The 3 resource that are NOT demonstrated in he example belows are `random_string`, `random_uuid` and `random_pet`, the first one - because `random_password` mostly duplicates its functionality ,and, hidden in console; and last one - is demonstrated in a separate repo [here](https://github.com/Galser/tf-random-pet). As for the `random_uuid` - its usage is straight-forward and will be provided also in a separate repo, together with `random_pet`. 
+The 3 resource that are NOT demonstrated in he example belows are `random_string`, `random_uuid` and `random_pet`, the first one - because `random_password` mostly duplicates its functionality ,and, hidden in console; and last one - is demonstrated in a separate repo [here](https://github.com/Galser/tf-random-pet). As for the `random_uuid` - its usage is straight-forward and will be provided also in a separate repo, aw go forward. 
 
 - Let's create our infrastructure, please put the code below in the file `main.tf`
     ```terraform
@@ -237,7 +237,7 @@ The 3 resource that are NOT demonstrated in he example belows are `random_string
       "zone" = "australia"
     }
     ```
-    Now, here as you can see we have 4 "random" values populated in tag.
+    Now, here as you can see we have 4 "random" values populated in tags of the instance.
     Some are very useful, for example *unique* name "randomexample-3b2423880b7324f8", some are less, and displaying passwords like this is not recommended in normal course of events. 
     This is only been provided as an exercise.
 -  Do not forget to free-up resource, when they do not needed anymore, by running : 
@@ -254,7 +254,7 @@ This concludes the section. Thank you!
 
 # done
 
-[x] initial readme
-[x] intro
-[x] example code
-[x] update Readme
+- [x] initial readme
+- [x] intro
+- [x] example code
+- [x] update Readme
